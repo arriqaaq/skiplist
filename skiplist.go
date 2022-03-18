@@ -86,7 +86,7 @@ func New() *Skiplist {
 	exist (up to the caller to enforce that). The skiplist takes ownership
 	of the passed key string.
 */
-func (z *Skiplist) exists(key string) bool {
+func (z *Skiplist) exists(key string) (*Node, bool) {
 	x := z.head
 	for i := z.level - 1; i >= 0; i-- {
 		for x.level[i].forward != nil &&
@@ -95,27 +95,20 @@ func (z *Skiplist) exists(key string) bool {
 		}
 
 		if x.key == key {
-			return true
+			return x, true
 		}
 	}
 
-	return false
+	return nil, false
 }
 
-func (z *Skiplist) update(key string, value interface{}) *Node {
-	x := z.head
-	for i := z.level - 1; i >= 0; i-- {
-		for x.level[i].forward != nil &&
-			bytes.Compare([]byte(x.level[i].forward.key), []byte(key)) <= 0 {
-			x = x.level[i].forward
-		}
-
-		if x.key == key {
-			x.value = value
-			return x
-		}
+func (z *Skiplist) Update(key string, value interface{}) bool {
+	n, exist := z.exists(key)
+	if !exist {
+		return false
 	}
-	return nil
+	n.value = value
+	return true
 }
 
 func (z *Skiplist) Set(key string, value interface{}) *Node {
@@ -135,8 +128,9 @@ func (z *Skiplist) Set(key string, value interface{}) *Node {
 		update other necessary infos, such as span, length.
 	*/
 
-	if z.exists(key) {
-		return z.update(key, value)
+	if n, exists := z.exists(key); exists {
+		n.value = value
+		return n
 	}
 
 	updates := make([]*Node, SKIPLIST_MAXLEVEL)
