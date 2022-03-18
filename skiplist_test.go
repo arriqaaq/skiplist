@@ -101,3 +101,15 @@ func TestSkipList_Unique(t *testing.T) {
 	assert.Equal(t, 10000, len(list.Keys()))
 	assert.Equal(t, "member_9", list.Get(key).Value())
 }
+
+func TestSkipList_Foo(t *testing.T) {
+	list := makeList(10000)
+	assert.Equal(t, 10000, len(list.Keys()))
+	key := "key_500"
+	for i := 1; i < 10; i++ {
+		member := fmt.Sprintf("member_%d", i)
+		list.Set(key, member)
+	}
+	assert.Equal(t, 10000, len(list.Keys()))
+	assert.Equal(t, "member_9", list.Get(key).Value())
+}

@@ -102,13 +102,18 @@ func (z *Skiplist) exists(key string) (*Node, bool) {
 	return nil, false
 }
 
-func (z *Skiplist) Update(key string, value interface{}) bool {
-	n, exist := z.exists(key)
-	if !exist {
-		return false
+func (z *Skiplist) Update(key string, value interface{}) {
+	x := z.head
+	for i := z.level - 1; i >= 0; i-- {
+		for x.level[i].forward != nil &&
+			bytes.Compare([]byte(x.level[i].forward.key), []byte(key)) <= 0 {
+			x = x.level[i].forward
+		}
+
+		if x.key == key {
+			x.value = value
+		}
 	}
-	n.value = value
-	return true
 }
 
 func (z *Skiplist) Set(key string, value interface{}) *Node {
