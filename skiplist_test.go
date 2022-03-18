@@ -90,41 +90,26 @@ func TestSkipList_Update(t *testing.T) {
 	assert.Equal(t, 1, len(list.Keys()))
 }
 
-func TestSkipList_exists(t *testing.T) {
-	list := New()
-	val := []byte("test_val")
-
-	list.Set("ec", val)
-	list.Set("dc", 123)
-	list.Set("ac", val)
-
-	assert.True(t, list.exists("ec"))
-	assert.True(t, list.exists("dc"))
-	assert.True(t, list.exists("ac"))
-}
-
-func TestSkipList_update(t *testing.T) {
-	list := New()
-	key := "foo"
-	val := []byte("test_val")
-
-	list.Set(key, val)
-	list.update(key, 123)
-	list.update(key, "foo")
-
-	assert.Equal(t, "foo", list.Get(key).Value())
-	assert.Equal(t, 1, len(list.Keys()))
-}
-
 func TestSkipList_Unique(t *testing.T) {
-	list := New()
-	key := "foo"
-
-	for i := 1; i < 1000; i++ {
+	list := makeList(10000)
+	assert.Equal(t, 10000, len(list.Keys()))
+	key := "key_500"
+	for i := 1; i < 10; i++ {
 		member := fmt.Sprintf("member_%d", i)
 		list.Set(key, member)
-		assert.Equal(t, member, list.Get(key).Value())
 	}
-	assert.Equal(t, 1, len(list.Keys()))
-	assert.Equal(t, "member_999", list.Get(key).Value())
+	assert.Equal(t, 10000, len(list.Keys()))
+	assert.Equal(t, "member_9", list.Get(key).Value())
+}
+
+func TestSkipList_Foo(t *testing.T) {
+	list := makeList(10000)
+	assert.Equal(t, 10000, len(list.Keys()))
+	key := "key_500"
+	for i := 1; i < 10; i++ {
+		member := fmt.Sprintf("member_%d", i)
+		list.Set(key, member)
+	}
+	assert.Equal(t, 10000, len(list.Keys()))
+	assert.Equal(t, "member_9", list.Get(key).Value())
 }
