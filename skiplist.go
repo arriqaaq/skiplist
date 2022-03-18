@@ -86,6 +86,38 @@ func New() *Skiplist {
 	exist (up to the caller to enforce that). The skiplist takes ownership
 	of the passed key string.
 */
+func (z *Skiplist) exists(key string) bool {
+	x := z.head
+	for i := z.level - 1; i >= 0; i-- {
+		for x.level[i].forward != nil &&
+			bytes.Compare([]byte(x.level[i].forward.key), []byte(key)) <= 0 {
+			x = x.level[i].forward
+		}
+
+		if x.key == key {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (z *Skiplist) update(key string, value interface{}) *Node {
+	x := z.head
+	for i := z.level - 1; i >= 0; i-- {
+		for x.level[i].forward != nil &&
+			bytes.Compare([]byte(x.level[i].forward.key), []byte(key)) <= 0 {
+			x = x.level[i].forward
+		}
+
+		if x.key == key {
+			x.value = value
+			return x
+		}
+	}
+	return nil
+}
+
 func (z *Skiplist) Set(key string, value interface{}) *Node {
 	/*
 
@@ -102,6 +134,10 @@ func (z *Skiplist) Set(key string, value interface{}) *Node {
 		insert new node according to update and rank info
 		update other necessary infos, such as span, length.
 	*/
+
+	if z.exists(key) {
+		return z.update(key, value)
+	}
 
 	updates := make([]*Node, SKIPLIST_MAXLEVEL)
 	rank := make([]uint64, SKIPLIST_MAXLEVEL)
@@ -125,10 +161,6 @@ func (z *Skiplist) Set(key string, value interface{}) *Node {
 		updates[i] = x
 	}
 
-	/* we assume the key is not already inside, since we allow duplicated
-	 * scores, and the re-insertion of score and redis object should never
-	 * happen since the caller of Insert() should test in the hash table
-	 * if the element is already inside or not. */
 	level := randomLevel()
 	if level > z.level { // add a new level
 		for i := z.level; i < level; i++ {
