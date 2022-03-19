@@ -81,11 +81,6 @@ func New() *Skiplist {
 	}
 }
 
-/*
-	Insert a new node in the skiplist. Assumes the element does not already
-	exist (up to the caller to enforce that). The skiplist takes ownership
-	of the passed key string.
-*/
 func (z *Skiplist) exists(key string) (*Node, bool) {
 	x := z.head
 	for i := z.level - 1; i >= 0; i-- {
@@ -116,6 +111,9 @@ func (z *Skiplist) Update(key string, value interface{}) {
 	}
 }
 
+/*
+	Insert a new node in the skiplist.
+*/
 func (z *Skiplist) Set(key string, value interface{}) *Node {
 	/*
 
