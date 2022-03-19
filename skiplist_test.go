@@ -82,9 +82,9 @@ func TestSkipList_Update(t *testing.T) {
 	key := "foo"
 	val := []byte("test_val")
 
-	list.Set(key, val)
-	list.Set(key, 123)
-	list.Set(key, "foo")
+	assert.Equal(t, val, list.Set(key, val).Value())
+	assert.Equal(t, 123, list.Set(key, 123).Value())
+	assert.Equal(t, "foo", list.Set(key, "foo").Value())
 
 	assert.Equal(t, "foo", list.Get(key).Value())
 	assert.Equal(t, 1, len(list.Keys()))
@@ -96,7 +96,7 @@ func TestSkipList_Unique(t *testing.T) {
 	key := "key_500"
 	for i := 1; i < 10; i++ {
 		member := fmt.Sprintf("member_%d", i)
-		list.Set(key, member)
+		assert.Equal(t, member, list.Set(key, member).Value())
 	}
 	assert.Equal(t, 10000, len(list.Keys()))
 	assert.Equal(t, "member_9", list.Get(key).Value())

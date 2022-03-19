@@ -102,7 +102,7 @@ func (z *Skiplist) exists(key string) (*Node, bool) {
 	return nil, false
 }
 
-func (z *Skiplist) Update(key string, value interface{}) {
+func (z *Skiplist) update(key string, value interface{}) {
 	x := z.head
 	for i := z.level - 1; i >= 0; i-- {
 		for x.level[i].forward != nil &&
@@ -134,7 +134,7 @@ func (z *Skiplist) Set(key string, value interface{}) *Node {
 	*/
 
 	if n, exists := z.exists(key); exists {
-		n.value = value
+		z.update(key, value)
 		return n
 	}
 
