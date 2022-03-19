@@ -19,26 +19,29 @@ This will retrieve the library.
 ```go
 package main
 
-import "github.com/arriqaaq/skiplist"
+import (
+	"github.com/arriqaaq/skiplist"
+	"github.com/stretchr/testify/assert"
+)
 
 type kv struct{k,v string}
 
 func main() {
 
     // Set (accepts any value)
-    n := skiplist.New()
-	val := []byte("test_val")
+    val := []byte("test_val")
 
-	n.Set("ec", val)
-	n.Set("dc", 123)
-	n.Set("ac", val)
+    n := skiplist.New()
+    n.Set("ec", val)
+    n.Set("dc", 123)
+    n.Set("ac", val)
 
     // Get
-    node:= list.Get("ec")
-	assert.Equal(t, val, node.Value())
+    node:= n.Get("ec")
+    assert.Equal(t, val, node.Value())
 
     // Delete
-	n.Delete("dc")
+    n.Delete("dc")
 }
 ```
 
