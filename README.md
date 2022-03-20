@@ -20,28 +20,27 @@ This will retrieve the library.
 package main
 
 import (
-	"github.com/arriqaaq/skiplist"
-	"github.com/stretchr/testify/assert"
-)
+	"fmt"
 
-type kv struct{k,v string}
+	"github.com/arriqaaq/skiplist"
+)
 
 func main() {
 
-    // Set (accepts any value)
-    val := []byte("test_val")
+	// Set (accepts any value)
+	val := "test_val"
 
-    n := skiplist.New()
-    n.Set("ec", val)
-    n.Set("dc", 123)
-    n.Set("ac", val)
+	n := skiplist.New()
+	n.Set("ec", val)
+	n.Set("dc", 123)
+	n.Set("ac", val)
 
-    // Get
-    node:= n.Get("ec")
-    assert.Equal(t, val, node.Value())
+	// Get
+	node := n.Get("ec")
+	fmt.Println("value: ", node.Value())
 
-    // Delete
-    n.Delete("dc")
+	// Delete
+	n.Delete("dc")
 }
 ```
 
